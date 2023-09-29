@@ -1,3 +1,6 @@
 
 CC="gcc"
 FLAGS= -Wall -Werror
+
+run:
+	gcc -o run src/**.c

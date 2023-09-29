@@ -1,8 +1,14 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 const char *INFO = "[+]";
 const char *ERROR = "[-]";
 const char *WARNING = "[+-]";
+
+typedef struct HelloConfig {
+    char *queryData;
+    char *file_path;
+} ConfigClone;
 
 typedef struct Config {
     char *query;
@@ -12,50 +18,48 @@ typedef struct Config {
 
 } StringConfig;
 
-// void new(StringConfig *config, char *args[]) {
-//     char *query = args[1];
-//     char *file_path = args[2];
-//     int ignore_case = atoi(getenv("IGNORE_CASE"));
-//     config->file_path = file_path;
-//     config->query = query;
-//     config->ignore_case = ignore_case;
-// }
+int len(char **data) {
+    int count = 0;
+    for(int i = 0; data[i] != NULL; i++) {
+        count++;
+    }
+    return count;
+}
 
-// int len(char **contents) {
-//     int count = 0;
-//     char *init_char = contents[0];
-//     while(init_char != NULL) {
-//         count++;
-//         init_char = contents[count];
-//     }
-//     return count;
-// }
+void new(StringConfig *config, char *args[]) {
+    if(len(args) < 2) {
+        printf("%s Error: Unable to acquire values", ERROR);
+        exit(1);
+    }
+    char *env = getenv("IGNORE_CASE");
+    if(env == NULL) {
+        env = "0";
+    }
+    config->file_path = args[1];
+    config->query = args[2];
+    config->ignore_case = atoi(env);
+}
 
-// char **file_search(char *query, char **contents) {
-//     char **results;
-//     // Line by line
-//     for(int i = 0; i < len(contents); i++) {
-//     }
-// }
-
-// char **search(char *query, char *contents) {
-//   char **results;
-//   for (int i = 0; i < len(contents); i++) {
-//   }
-// }
+void search(char *file_path, char *query) {
+    char data[256];
+    FILE *poem = fopen(file_path, "r");
+    if(poem == NULL) {
+        printf("%s file can't be opened \n", ERROR);
+        exit(0);
+    }
+    while(fgets(data, 100, poem) != NULL) {
+        char *res = strstr(data, query);
+        if(res != NULL) {
+	printf("%s RES: %s", INFO, res);
+        }
+    }
+    fclose(poem);
+}
 
 int main(int argc, char *argv[]) {
-    // StringConfig config;
-    // new(&config, argv);
-    char *poemData;
-    FILE *poem = fopen("test.txt", "rw");
-    if(NULL == poem) {
-        printf("file can't be opened \n");
-    }
+    StringConfig config;
+    new(&config, argv);
+    search(config.file_path, config.query);
 
-    while(fgets(poemData, 100, poem) != NULL) {
-        printf("%s Poem: %s", INFO, poemData);
-    };
-    fclose(poem);
     return EXIT_SUCCESS;
 }
