@@ -4,6 +4,7 @@
 const char *INFO = "[+]";
 const char *ERROR = "[-]";
 const char *WARNING = "[+-]";
+const char *hello = "[]";
 
 typedef struct HelloConfig {
     char *queryData;
